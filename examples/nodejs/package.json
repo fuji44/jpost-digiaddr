@@ -1,0 +1,13 @@
+{
+  "name": "jpost-digiaddr-example-for-nodejs",
+  "version": "1.0.0",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^22.5.5",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  },
+  "dependencies": {
+    "@fuji44/jpost-digiaddr": "npm:@jsr/fuji44__jpost-digiaddr@^0.1.0"
+  }
+}

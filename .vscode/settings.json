@@ -1,4 +1,7 @@
 {
+  "deno.disablePaths": [
+    "examples/nodejs"
+  ],
   "rest-client.environmentVariables": {
     "$shared": {
       "baseUrl": "https://stub-qz73x.da.pf.japanpost.jp"
