@@ -39,7 +39,9 @@ import {
  * @param requestAdapter The request adapter to use to execute the requests.
  */
 // @ts-ignore
-export function createJPostDigiAddrClient(requestAdapter: RequestAdapter) {
+export function createJPostDigiAddrClient(
+  requestAdapter: RequestAdapter,
+): JPostDigiAddrClient {
   if (requestAdapter === undefined) {
     throw new Error("requestAdapter cannot be undefined");
   }
