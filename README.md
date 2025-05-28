@@ -18,7 +18,11 @@
 ### インストール
 
 ```shell
+# Deno
 deno add jsr:@fuji44/jpost-digiaddr
+
+# Node.js
+npx jsr add @fuji44/jpost-digiaddr
 ```
 
 ## 使い方
