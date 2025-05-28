@@ -29,7 +29,7 @@ import {
   createJPostDigiAddrClient,
   FetchRequestAdapter,
   JPostDigiAddrAccessTokenProvider,
-} from "../mod.ts";
+} from "@fuji44/jpost-digiaddr";
 
 const provider = new BaseBearerTokenAuthenticationProvider(
   new JPostDigiAddrAccessTokenProvider(
