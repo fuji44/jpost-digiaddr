@@ -1,0 +1,1663 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "description": "郵便番号・デジタルアドレスAPIは、デジタルアドレスコアシステムへのアクセスを提供します。<br>\nトークン発行やデジタルアドレス、郵便番号、事業所個別郵便番号の検索などの機能を提供します。",
+    "title": "API Reference for 郵便番号・デジタルアドレス",
+    "version": "1.0.0.250319",
+    "x-title-en": "API Reference for ZIP Code and Digital Address",
+    "x-description-en": "The Digital Address API provides features such as token issuance, ZIP Code* search, company-specific ZIP Code search, and Digital Address lookup. <br>\n*ZIP Code refers to Postal Code<br>\n"
+  },
+  "servers": [
+    {
+      "description": "本番環境",
+      "url": "https://api.da.pf.japanpost.jp"
+    },
+    {
+      "description": "テスト環境",
+      "url": "https://stub-qz73x.da.pf.japanpost.jp"
+    }
+  ],
+  "tags": [
+    {
+      "description": "郵便番号、事業所個別郵便番号、デジタルアドレスの共通検索\n",
+      "name": "searchcode",
+      "x-description-sbx": "郵便番号、事業所個別郵便番号、デジタルアドレスの共通検索 テスト用API\n",
+      "x-description-en": "Common search for ZIP Code, Unique Corporate ZIP Code, and Digital Address\n"
+    },
+    {
+      "description": "住所の一部から該当する住所を検索\n",
+      "name": "addresszip",
+      "x-description-en": "Search for Corresponding Address from Part of the Address\n"
+    },
+    {
+      "description": "事業者が郵便番号・デジタルアドレスAPIを利用するのに必要なトークンを取得\n",
+      "name": "token",
+      "x-description-en": "Retrieval of the necessary token for a business to use the Digital Address API\n"
+    }
+  ],
+  "paths": {
+    "/api/v1/searchcode/{search_code}": {
+      "get": {
+        "description": "郵便番号、事業所個別郵便番号、デジタルアドレスの統一検索エンドポイント。\nいずれかを指定して検索を行い、住所情報を返す。  \n検索時に、ページ番号や取得件数を指定。指定がない場合はデフォルト値が適用される。  \n\nパラメーター:\n- `page`: ページ番号 (デフォルト値:1)\n- `limit`: 取得する最大レコード数 (デフォルト値:1、最大値:1000)\n- `choikitype`: 返却する町域フィールド (指定がない場合はchoikitype=1とみなす)\n  - `1`: 括弧なし\n  - `2`: 括弧あり\n- `searchtype`: 検索対象 (指定がない場合はsearchtype=1とみなす)\n  - `1`: 郵便番号、事業所個別郵便番号、デジタルアドレスを検索\n  - `2`: 郵便番号、デジタルアドレスを検索\n",
+        "operationId": "",
+        "parameters": [
+          {
+            "description": "- 郵便番号\n  (3桁以上の数値。入力された値が7桁未満であった場合、入力値から始まるデータをパターン検索する。)\n- 事業所個別郵便番号\n- デジタルアドレス\n",
+            "in": "path",
+            "name": "search_code",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-description-en": "- ZIP Code\n  (A ZIP Code with at least 3 digits. If the entered value is less than 7 digits, the system will search for data starting with the entered value.)\n- Unique Corporate ZIP Code\n- Digital Address\n"
+          },
+          {
+            "description": "ページ番号 (デフォルト値:1)",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "number"
+            },
+            "x-description-en": "Page number (default:1)\n"
+          },
+          {
+            "description": "取得最大レコード数 (デフォルト値:1、最大値:1000)",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "type": "number"
+            },
+            "x-description-en": "Maximum number of records to retrieve (default:1, max:1000)\n"
+          },
+          {
+            "description": "プロバイダーのユーザーID (クエリパラメーター)",
+            "in": "query",
+            "name": "ec_uid",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "x-description-en": "Provider's user ID (query parameter)"
+          },
+          {
+            "description": "返却するフィールドを指定 (指定がない場合はchoikitype=1とみなす)\n- `1`: 括弧無し町域フィールド\n- `2`: 括弧有り町域フィールド\n",
+            "in": "query",
+            "name": "choikitype",
+            "required": false,
+            "schema": {
+              "type": "number"
+            },
+            "x-description-en": "Specify the fields to return (If not specified, choikitype=1 is assumed)\n- `1`: Town Field without brackets\n- `2`: Town Field with brackets\n"
+          },
+          {
+            "description": "検索方法を指定 (指定がない場合はsearchtype=1とみなす)\n- `1`: 郵便番号、事業所個別郵便番号、デジタルアドレスを検索する\n- `2`: 郵便番号、デジタルアドレスを検索する (事業所個別郵便番号は検索対象外)\n",
+            "in": "query",
+            "name": "searchtype",
+            "required": false,
+            "schema": {
+              "type": "number"
+            },
+            "x-description-en": "Specify the Search Method (If not specified, searchtype=1 is assumed)\n- `1`: Search for ZIP Code, Unique Corporate ZIP Code, and Digital Address\n- `2`: Search for ZIP Code and Digital Address (Unique Corporate ZIP Code is excluded from the search)\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchcodeSearchRes"
+                }
+              }
+            },
+            "description": "検索した郵便番号、事業所個別郵便番号、デジタルアドレスの情報を返す。<br>\n郵便番号、事業所個別郵便番号、デジタルアドレスはテーブル定義に差異があるため、データが無い項目についてはnullをセットして返す。\n",
+            "x-description-en": "Returns the information of the searched ZIP Code, Unique Corporate ZIP Code, and Digital Address.<br>\nSince there are differences in the table definitions for ZIP Code, Unique Corporate ZIP Code, and Digital Address, null will be set and returned for fields with no data.\n"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "",
+                    "summary": "パラメーターエラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "400-1029-0001",
+                      "message": "検索パラメータが正しくありません"
+                    }
+                  },
+                  "example2": {
+                    "description": "指定されたデジタルアドレスのチェックディジットが一致しません",
+                    "summary": "デジタルアドレスエラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "400-1029-0002",
+                      "message": "デジアドの形式が正しくありません"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "トークンが不正です 認証エラー",
+                    "summary": "トークンの認証エラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0001",
+                      "message": "トークンが不正です"
+                    }
+                  },
+                  "example2": {
+                    "description": "トークンが不正です トークンの期限切れ",
+                    "summary": "トークンの期限切れ",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0002",
+                      "message": "トークンが不正です"
+                    }
+                  },
+                  "example3": {
+                    "description": "トークンが不正です 不正なトークン",
+                    "summary": "トークンが不正です",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0003",
+                      "message": "トークンが不正です"
+                    }
+                  },
+                  "example4": {
+                    "description": "トークンが不正です パラメータ",
+                    "summary": "トークンエラー パラメータ",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0004",
+                      "message": "トークンが不正です"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Unauthorized"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "",
+                    "summary": "デジタルアドレスエラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1029-0001",
+                      "message": "該当するデジアドが存在しません"
+                    }
+                  },
+                  "example2": {
+                    "description": "",
+                    "summary": "郵便番号・事業所郵便番号エラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1029-0002",
+                      "message": "該当する郵便番号・事業所郵便番号が存在しません"
+                    }
+                  },
+                  "example3": {
+                    "description": "",
+                    "summary": "スコープエラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1029-0100",
+                      "message": "対応するAPIがありません"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "",
+                    "summary": "不明なエラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1029-0001",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example2": {
+                    "description": "トークンが不正ですサーバー関連エラー",
+                    "summary": "サーバー関連エラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-9001-0001",
+                      "message": "サーバー関連エラー"
+                    }
+                  },
+                  "example3": {
+                    "description": "トークンが不正です 不明なエラー",
+                    "summary": "サーバー関連エラー 不明なエラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-9001-0002",
+                      "message": "トークンチェック 不明なエラー"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ],
+        "summary": "コード番号検索 (1-1029)\n",
+        "tags": [
+          "searchcode"
+        ],
+        "x-summary-sbx": "コード番号検索 (1-1029) テスト用API\n",
+        "x-summary-en": "Code Number Search (1-1029)\n",
+        "x-description-sbx": "郵便番号、事業所個別郵便番号、デジタルアドレスの統一検索エンドポイント。\nいずれかを指定して検索を行い、住所情報を返す。  \nテスト用APIではテスト用のデジタルアドレス3種と東京都千代田区に対して郵便番号、事業所個別郵便番号の検索が可能。  \n検索時に、ページ番号や取得件数を指定。指定がない場合はデフォルト値が適用される。  \n\nパラメーター:\n- `page`: ページ番号 (デフォルト値:1)\n- `limit`: 取得する最大レコード数 (デフォルト値:1、最大値:1000)\n- `choikitype`: 返却する町域フィールド (指定がない場合はchoikitype=1とみなす)\n  - `1`: 括弧なし\n  - `2`: 括弧あり\n- `searchtype`: 検索対象 (指定がない場合はsearchtype=1とみなす)\n  - `1`: 郵便番号、事業所個別郵便番号、デジタルアドレスを検索\n  - `2`: 郵便番号、デジタルアドレスを検索\n\n検索可能なデジタルアドレス3種:\n- `サンプル1`\n  - `デジタルアドレス`: A7E-2FK2\n  - `住所：` \n    - `都道府県`: 東京都\n    - `市区郡町村`: 千代田区\n    - `町名`: 丸の内\n    - `番地`: 2丁目7-2\n    - `建物`: 部屋番号:サンプル1\n- `サンプル2`\n  - `デジタルアドレス`: JN4-LKS2\n  - `住所：` \n    - `都道府県`: 大阪府\n    - `市区郡町村`: 大阪市北区\n    - `町名`: 梅田\n    - `番地`: 3丁目2-2\n    - `建物`: 部屋番号:サンプル2\n- `サンプル3`\n  - `デジタルアドレス`: QN6-GQX1\n  - `住所：` \n    - `都道府県`: 福岡県\n    - `市区郡町村`: 福岡市博多区\n    - `町名`: 博多駅中央街\n    - `番地`: 9-1\n    - `建物`: 部屋番号:サンプル3\n",
+        "x-description-en": "Unified search endpoint for ZIP Code, Unique Corporate ZIP Code, and Digital Address.<br>\nSpecify one option to perform a search and return address information.<br>\nWhen searching, specify the page number and the number of records to retrieve. If not specified, default values will be applied.\n\nParameters:\n- `page`: Page number (default:1)\n- `limit`: \n  Maximum number of records to retrieve (default:1, max:1000)\n- `choikitype`: Type of returned town field (If not specified, choikitype=1 is assumed)\n  - `1`: Without brackets\n  - `2`: With brackets\n- `searchtype`: Search target (If not specified, searchtype=1 is assumed)\n  - `1`: Search for ZIP Code, Unique Corporate ZIP Code, and Digital Address\n  - `2`: Search for ZIP Code and Digital Address\n",
+        "x-description-sbx-en": "Test\n"
+      }
+    },
+    "/api/v1/addresszip": {
+      "post": {
+        "description": "住所の一部から該当する郵便番号・住所情報を検索",
+        "operationId": "",
+        "parameters": [
+          {
+            "description": "プロバイダーのユーザーID (クエリパラメーター)",
+            "in": "query",
+            "name": "ec_uid",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "x-description-en": "Provider's user ID (query parameter)"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "examples": {
+                "example1": {
+                  "description": "都道府県コードと市区町村コード",
+                  "summary": "リクエスト組み合わせ例 1",
+                  "value": {
+                    "pref_code": "13",
+                    "city_code": "13102",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0,
+                    "page": 1,
+                    "limit": 100
+                  }
+                },
+                "example2": {
+                  "description": "都道府県名と市区町村名",
+                  "summary": "リクエスト組み合わせ例 2",
+                  "value": {
+                    "pref_name": "東京都",
+                    "city_name": "中央区",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0,
+                    "page": 1,
+                    "limit": 100
+                  }
+                },
+                "example3": {
+                  "description": "都道府県名と市区町村名、町域名",
+                  "summary": "リクエスト組み合わせ例 3",
+                  "value": {
+                    "pref_name": "東京都",
+                    "city_name": "中央区",
+                    "town_name": "明石町",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0
+                  }
+                },
+                "example4": {
+                  "description": "都道府県名カナと市区町村名カナ、町域名カナ",
+                  "summary": "リクエスト組み合わせ例 4",
+                  "value": {
+                    "pref_kana": "トウキョウト",
+                    "city_kana": "チュウオウク",
+                    "town_kana": "アカシチョウ",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0
+                  }
+                },
+                "example5": {
+                  "description": "都道府県名ローマ字と市区町村名ローマ字、町域名ローマ字",
+                  "summary": "リクエスト組み合わせ例 5",
+                  "value": {
+                    "pref_roma": "tokyo",
+                    "city_roma": "chuo-ku",
+                    "town_roma": "akashicho",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0
+                  }
+                },
+                "example6": {
+                  "description": "都道府県コードとフリーワード",
+                  "summary": "リクエスト組み合わせ例 6",
+                  "value": {
+                    "pref_code": "13",
+                    "freeword": "中央区明石町",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0
+                  }
+                },
+                "example7": {
+                  "description": "都道府県コードとフリーワードカナ",
+                  "summary": "リクエスト組み合わせ例 7",
+                  "value": {
+                    "pref_code": "13",
+                    "freeword": "チュウオウク アカシチョウ",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0
+                  }
+                },
+                "example8": {
+                  "description": "都道府県コードとフリーワードローマ字",
+                  "summary": "リクエスト組み合わせ例 8",
+                  "value": {
+                    "pref_code": "13",
+                    "freeword": "chuo-ku akashicho",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0
+                  }
+                },
+                "example9": {
+                  "description": "フリーワードのみ",
+                  "summary": "リクエスト組み合わせ例 9",
+                  "value": {
+                    "freeword": "東京都中央区明石町",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0
+                  }
+                },
+                "example10": {
+                  "description": "フリーワード スペース区切り",
+                  "summary": "リクエスト組み合わせ例 10",
+                  "value": {
+                    "freeword": "東京都 中央区 明石町",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0
+                  }
+                },
+                "example11": {
+                  "description": "フリーワードカナ スペース区切り",
+                  "summary": "リクエスト組み合わせ例 11",
+                  "value": {
+                    "freeword": "トウキョウト チュウオウク アカシチョウ",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0
+                  }
+                },
+                "example12": {
+                  "description": "フリーワードローマ字 スペース区切り",
+                  "summary": "リクエスト組み合わせ例 12",
+                  "value": {
+                    "freeword": "tokyo chuo-ku akashicho",
+                    "flg_getcity": 0,
+                    "flg_getpref": 0
+                  }
+                },
+                "example13": {
+                  "description": "都道府県リスト取得",
+                  "summary": "リクエスト組み合わせ例 13",
+                  "value": {
+                    "flg_getpref": 1
+                  }
+                },
+                "example14": {
+                  "description": "都道府県名から市区町村リスト取得 1",
+                  "summary": "リクエスト組み合わせ例 14",
+                  "value": {
+                    "pref_name": "東京都",
+                    "flg_getcity": 1
+                  }
+                },
+                "example15": {
+                  "description": "都道府県コードから市区町村リスト取得 1",
+                  "summary": "リクエスト組み合わせ例 15",
+                  "value": {
+                    "pref_code": "13",
+                    "flg_getcity": 1
+                  }
+                },
+                "example16": {
+                  "description": "都道府県名から市区町村リスト取得 2",
+                  "summary": "リクエスト組み合わせ例 16",
+                  "value": {
+                    "pref_name": "東京都"
+                  }
+                },
+                "example17": {
+                  "description": "都道府県コードから市区町村リスト取得 2",
+                  "summary": "リクエスト組み合わせ例 17",
+                  "value": {
+                    "pref_code": "13"
+                  }
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/AddressReq"
+              }
+            }
+          },
+          "description": "- 住所から該当する郵便番号を返す\n- マッチングレベルに応じたデータを返す\n- リクエストのデータタイプを添えてリクエストすること。データタイプは下記が該当\n  - コード (pref_codeなど)\n  - 名称 (pref_nameなど)\n  - カタカナ\n  - ローマ字\n  - フリーワード\n- パラメータについての注意\n  - `page`でページ番号を指定し、`limit`でレスポンスの最大取得件数を指定可能\n  - `page`と`limit`が省略された場合は、デフォルト値 (page=1, limit=1000)が適用される\n  - `pref_code`と`pref_name`が両方リクエストされた場合は、`pref_code`が優先される\n  - `city_code`と`city_name`が両方リクエストされた場合は、`city_code`が優先される\n",
+          "required": true,
+          "x-description-sbx": "- 住所から該当する郵便番号を返す\n- マッチングレベルに応じたデータを返す\n- テスト用APIでは東京都千代田区に対してのみ検索が可能\n- リクエストのデータタイプを添えてリクエストすること。データタイプは下記が該当\n  - コード (pref_codeなど)\n  - 名称 (pref_nameなど)\n  - カタカナ\n  - ローマ字\n  - フリーワード\n- パラメータについての注意\n  - `page`でページ番号を指定し、`limit`でレスポンスの最大取得件数を指定可能\n  - `page`と`limit`が省略された場合は、デフォルト値 (page=1, limit=1000)が適用される\n  - `pref_code`と`pref_name`が両方リクエストされた場合は、`pref_code`が優先される\n  - `city_code`と`city_name`が両方リクエストされた場合は、`city_code`が優先される\n",
+          "x-description-en": "- Returns the corresponding ZIP Code from the address\n- Returns data based on the matching level\n- Include the data type in the request. The applicable data types are as follows:\n  - Code (e.g., pref_code)\n  - Name (e.g., pref_name)\n  - Katakana\n  - Romanized letters\n  - Free text\n- Notes on parameters:\n  - You can specify the page number with the `page` parameter and the maximum number of records to retrieve with the `limit` parameter\n  - If `page` and `limit` are omitted, default values (page=1, limit=1000) will be applied\n  - If both `pref_code` and `pref_name` are requested, `pref_code` will take priority\n  - If both `city_code` and `city_name` are requested, `city_code` will take priority\n"
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressRes"
+                }
+              }
+            },
+            "description": "検索した住所、マッチングレベル、郵便番号を返す。<br>\n- マッチングレベル :1 都道府県レベルで一致\n- マッチングレベル :2 市区町村レベルで一致\n- マッチングレベル :3 町域レベルで一致\n",
+            "x-description-en": "Returns the searched address, matching level, and ZIP Code.<br>\n- Matching Level: 1 - Matches at the prefecture level  <br>\n- Matching Level: 2 - Matches at the city/ward/town/village level<br>  \n- Matching Level: 3 - Matches at the town area level\n"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "パラメータが正しくありません",
+                    "summary": "パラメータエラー1",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "400-1018-0001",
+                      "message": "住所検索のパラメータが正しくありません"
+                    }
+                  },
+                  "example2": {
+                    "description": "市区町村リスト作成パラメータが正しくありません 対象都道府県コードの指定がない",
+                    "summary": "パラメータエラー2",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "400-1018-0002",
+                      "message": "住所検索のパラメータが正しくありません 市区町村指定"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "トークンが不正です 認証エラー",
+                    "summary": "トークンの認証エラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0001",
+                      "message": "トークンが不正です"
+                    }
+                  },
+                  "example2": {
+                    "description": "トークンが不正です トークンの期限切れ",
+                    "summary": "トークンの期限切れ",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0002",
+                      "message": "トークンが不正です"
+                    }
+                  },
+                  "example3": {
+                    "description": "トークンが不正です 不正なトークン",
+                    "summary": "トークンが不正です",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0003",
+                      "message": "トークンが不正です"
+                    }
+                  },
+                  "example4": {
+                    "description": "トークンが不正です パラメータ",
+                    "summary": "トークンエラー パラメータ",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0004",
+                      "message": "トークンが不正です"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Unauthorized"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "都道府県が見つからない",
+                    "summary": "該当データなし1",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0001",
+                      "message": "該当する住所が見つかりませんでした"
+                    }
+                  },
+                  "example2": {
+                    "description": "市区町村が見つからない",
+                    "summary": "該当データなし2",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0002",
+                      "message": "該当する住所が見つかりませんでした"
+                    }
+                  },
+                  "example3": {
+                    "description": "郵便番号住所カナ検索 該当する住所が見つかりませんでした",
+                    "summary": "該当データなし3",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0003",
+                      "message": "該当する住所が見つかりませんでした"
+                    }
+                  },
+                  "example4": {
+                    "description": "郵便番号住所ローマ字検索 該当する住所が見つかりませんでした",
+                    "summary": "該当データなし4",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0004",
+                      "message": "該当する住所が見つかりませんでした"
+                    }
+                  },
+                  "example5": {
+                    "description": "郵便番号住所字検索 該当する住所が見つかりませんでした フリーワード無し、都道府県名またはコード有り、市区町村名またはコード有り、町域名有り",
+                    "summary": "該当データなし5",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0005",
+                      "message": "該当する住所が見つかりませんでした"
+                    }
+                  },
+                  "example6": {
+                    "description": "郵便番号住所字検索 該当する住所が見つかりませんでした フリーワード有りスペース区切り、都道府県名またはコード有り、市区町村名またはコード無し、町域名無し",
+                    "summary": "該当データなし6",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0006",
+                      "message": "該当する住所が見つかりませんでした"
+                    }
+                  },
+                  "example7": {
+                    "description": "郵便番号住所字検索 該当する住所が見つかりませんでした フリーワード有りスペース区切り有り、都道府県名またはコード無し、市区町村名またはコード無し、町域名無し",
+                    "summary": "該当データなし7",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0007",
+                      "message": "該当する住所が見つかりませんでした"
+                    }
+                  },
+                  "example8": {
+                    "description": "郵便番号住所字検索 該当する住所が見つかりませんでした フリーワード有りスペース区切り無し、都道府県名またはコード無し、市区町村名またはコード無し、町域名無し",
+                    "summary": "該当データなし8",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0008",
+                      "message": "該当する住所が見つかりませんでした"
+                    }
+                  },
+                  "example9": {
+                    "description": "郵便番号住所字検索 該当する住所が見つかりませんでした フリーワード無し、都道府県名またはコード有り、市区町村名またはコード有り、町域名無し",
+                    "summary": "該当データなし9",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0009",
+                      "message": "該当する住所が見つかりませんでした"
+                    }
+                  },
+                  "example10": {
+                    "description": "郵便番号住所字検索 該当する住所が見つかりませんでした フリーワード無し、都道府県名またはコード有り、市区町村名またはコード無し、町域名無し",
+                    "summary": "該当データなし10",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0010",
+                      "message": "該当する住所が見つかりませんでした"
+                    }
+                  },
+                  "example11": {
+                    "description": "郵便番号住所字検索 該当する住所が見つかりませんでした フリーワード有りスペース区切り無し、都道府県名またはコード無し、市区町村名またはコード無し、町域名無し",
+                    "summary": "該当データなし11",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0011",
+                      "message": "該当する住所が見つかりませんでした"
+                    }
+                  },
+                  "example12": {
+                    "description": "",
+                    "summary": "スコープエラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "404-1018-0100",
+                      "message": "対応するAPIがありません"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/NotFound"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "郵便番号検索時の内部エラー 都道府県のリスト",
+                    "summary": "サーバー内部エラー1",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1018-0001",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example2": {
+                    "description": "郵便番号検索時の内部エラー 市区町村のリスト",
+                    "summary": "サーバー内部エラー2",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1018-0002",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example3": {
+                    "description": "郵便番号住所カナ検索時の内部エラー",
+                    "summary": "サーバー内部エラー3",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1018-0003",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example4": {
+                    "description": "郵便番号住所ローマ字検索時の内部エラー",
+                    "summary": "サーバー内部エラー4",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1018-0004",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example5": {
+                    "description": "郵便番号住所検索時の内部エラー フリーワード無し・コードor 都道府県名またはコード有り、市区町村名またはコード有り、町域名有り",
+                    "summary": "サーバー内部エラー5",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1018-0005",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example6": {
+                    "description": "郵便番号住所検索時の内部エラー フリーワード有り・コードor 都道府県名またはコード有り、市区町村名またはコード無し、町域名無し",
+                    "summary": "サーバー内部エラー6",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1018-0006",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example7": {
+                    "description": "郵便番号住所検索時の内部エラー フリーワード有りスペース区切り有り・コードor 都道府県名またはコード無し、市区町村名またはコード無し、町域名無し",
+                    "summary": "サーバー内部エラー7",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1018-0007",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example8": {
+                    "description": "郵便番号住所検索時の内部エラー フリーワード有りスペース区切り無し・コードor 都道府県名またはコード有り、市区町村名またはコード無し、町域名無し",
+                    "summary": "サーバー内部エラー8",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1018-0008",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example9": {
+                    "description": "郵便番号住所検索時の内部エラー フリーワード無し・コードor 都道府県名またはコード有り、市区町村名またはコード有り、町域名無し",
+                    "summary": "サーバー内部エラー9",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1018-0009",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example10": {
+                    "description": "郵便番号住所検索時の内部エラー フリーワード無し・コードor 都道府県名またはコード有り、市区町村名またはコード無し、町域名無し",
+                    "summary": "サーバー内部エラー10",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1018-0010",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example11": {
+                    "description": "郵便番号住所検索時の内部エラー フリーワード有りスペース区切りなし・コードor 都道府県名またはコード無し、市区町村名またはコード無し、町域名無し",
+                    "summary": "サーバー内部エラー11",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1018-0011",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example12": {
+                    "description": "トークンが不正ですサーバー関連エラー",
+                    "summary": "サーバー関連エラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-9001-0001",
+                      "message": "サーバー関連エラー"
+                    }
+                  },
+                  "example13": {
+                    "description": "トークンが不正です 不明なエラー",
+                    "summary": "サーバー関連エラー 不明なエラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-9001-0002",
+                      "message": "トークンチェック 不明なエラー"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal ServerError"
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ],
+        "summary": "住所から郵便番号を検索 (1-1018/1-1019)",
+        "tags": [
+          "addresszip"
+        ],
+        "x-summary-sbx": "住所から郵便番号を検索 (1-1018/1-1019) テスト用API",
+        "x-summary-en": "ZIP Code search by Address (1-1018/1-1019)",
+        "x-description-sbx": "住所の一部から該当する郵便番号・住所情報を検索。 テスト用API",
+        "x-description-en": "Search for the corresponding ZIP Code and address information from part of the address."
+      }
+    },
+    "/api/v1/j/token": {
+      "post": {
+        "description": "OAuth2.0におけるgrant_typeがclient_credentialsに基づいてトークンリクエストに対してAPI利用のトークンを返す。<br>\ngrant_typeとともに、組織およびシステム登録で事前に取得しているクライアントIDとシークレットキーを指定してリクエストし、検証結果が問題ない場合はJWT形式のトークンを返却。\n",
+        "operationId": "posttoken",
+        "parameters": [
+          {
+            "description": "送信元IPアドレス",
+            "in": "header",
+            "name": "x-forwarded-for",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-description-en": "Source IP address\n"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/jtokenReq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jtokenRes"
+                }
+              }
+            },
+            "description": "token情報を返します。",
+            "x-description-en": "The token information will be returned."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "クライアントIDまたはシークレットキーが違います",
+                    "summary": "クライアントIDまたはシークレットキーが違います",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "400-1028-0001",
+                      "message": "クライアントIDまたはシークレットキーが違います"
+                    }
+                  },
+                  "example2": {
+                    "description": "パラメータが正しくありません",
+                    "summary": "パラメータエラー",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "400-1028-0002",
+                      "message": "grant_typeが正しくありません"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequest"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "スコープがありません",
+                    "summary": "スコープがありません",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-1028-0001",
+                      "message": "スコープがありません"
+                    }
+                  },
+                  "example2": {
+                    "description": "トークンが不正です",
+                    "summary": "トークンが不正です1",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0001",
+                      "message": "トークンが不正です 認証エラー"
+                    }
+                  },
+                  "example3": {
+                    "description": "トークンが不正です",
+                    "summary": "トークンが不正です2",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0002",
+                      "message": "トークンが不正です トークンの期限切れ"
+                    }
+                  },
+                  "example4": {
+                    "description": "トークンが不正です",
+                    "summary": "トークンが不正です3",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0003",
+                      "message": "トークンが不正です 不正なトークン"
+                    }
+                  },
+                  "example5": {
+                    "description": "トークンが不正です",
+                    "summary": "トークンが不正です4",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0004",
+                      "message": "トークンが不正です パラメータ"
+                    }
+                  },
+                  "example6": {
+                    "description": "トークンが不正です",
+                    "summary": "トークンが不正です5",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "401-9001-0005",
+                      "message": "トークンが不正です"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Unauthorized"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "トークンを取得できません",
+                    "summary": "登録情報の不一致です",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "403-1028-0001",
+                      "message": "登録情報の不一致です"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Forbidden"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "examples": {
+                  "example1": {
+                    "description": "登録されたトークンを取得できません",
+                    "summary": "サーバー内部エラー1",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1028-0001",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example2": {
+                    "description": "トークンの検証でエラーが発生しました",
+                    "summary": "サーバー内部エラー2",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1028-0002",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example3": {
+                    "description": "トークン保存エラー",
+                    "summary": "サーバー内部エラー3",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-1028-0003",
+                      "message": "サーバー内部エラー"
+                    }
+                  },
+                  "example4": {
+                    "description": "サーバー関連エラー",
+                    "summary": "サーバー内部エラー4",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-9001-0001",
+                      "message": "トークンが不正です サーバー関連エラー"
+                    }
+                  },
+                  "example5": {
+                    "description": "サーバー関連エラー 不明なエラー",
+                    "summary": "サーバー内部エラー5",
+                    "value": {
+                      "request_id": "(API実行時に発行される識別ID)",
+                      "error_code": "500-9001-0002",
+                      "message": "トークンが不正です トークンチェックエラー"
+                    }
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal ServerError"
+          }
+        },
+        "summary": "API利用トークンの取得 (1-1028)",
+        "tags": [
+          "token"
+        ],
+        "x-summary-en": "Obtaining the API Usage Token (1-1028)",
+        "x-summary-sbx": "API利用トークンの取得 (1-1028) テスト用API",
+        "x-description-sbx": "OAuth2.0におけるgrant_typeがclient_credentialsに基づいてトークンリクエストに対してAPI利用のトークンを返す。<br>        \nテスト用APIではgrant_typeおよび事業者登録で事前に取得しているクライアントID(固定)とシークレットキー(固定)を指定してリクエストし、検証結果が問題ない場合はJWT形式のトークンを返却。\n",
+        "x-description-en": "Based on the grant_type of client_credentials in OAuth2.0, the API returns a usage token in response to the token request. <br>\nBy specifying the client ID and secret key, which were obtained in advance through organization and system registration, a request is made. \nIf the verification result is valid, a JWT-format token is returned.\n"
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "CommonHeader": {
+        "description": "送信元IPアドレス",
+        "in": "header",
+        "name": "x-forwarded-for",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "x-description-en": "Source IP address\n"
+      }
+    },
+    "securitySchemes": {
+      "token": {
+        "bearerFormat": "JWT",
+        "description": "Authorization: Bearer {トークン}",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "SearchcodeSearchRes_addresses_inner": {
+        "properties": {
+          "dgacode": { "type": "string" },
+          "zip_code": { "type": "string" },
+          "pref_code": { "type": "string" },
+          "pref_name": { "type": "string" },
+          "pref_kana": { "type": "string" },
+          "pref_roma": { "type": "string" },
+          "city_code": { "type": "string" },
+          "city_name": { "type": "string" },
+          "city_kana": { "type": "string" },
+          "city_roma": { "type": "string" },
+          "town_name": { "type": "string" },
+          "town_kana": { "type": "string" },
+          "town_roma": { "type": "string" },
+          "biz_name": { "type": "string" },
+          "biz_kana": { "type": "string" },
+          "biz_roma": { "type": "string" },
+          "block_name": { "type": "string" },
+          "other_name": { "type": "string" },
+          "address": { "type": "string" },
+          "longitude": { "type": "number" },
+          "latitude": { "type": "number" }
+        }
+      },
+      "SearchcodeSearchRes": {
+        "example": {
+          "addresses": [
+            {
+              "dgacode": null,
+              "zip_code": 100492,
+              "pref_code": "05",
+              "pref_name": "秋田県",
+              "pref_kana": null,
+              "pref_roma": null,
+              "city_code": 5368,
+              "city_name": "南秋田郡大潟村",
+              "city_kana": null,
+              "city_roma": null,
+              "town_name": "字西",
+              "town_kana": null,
+              "town_roma": null,
+              "biz_name": "あきたこまち生産者協会",
+              "biz_kana": "アキタコマチセイサンシヤキヨウカイ",
+              "biz_roma": null,
+              "block_name": "４丁目８８",
+              "other_name": null,
+              "address": null,
+              "longitude": null,
+              "latitude": null
+            },
+            {
+              "dgacode": null,
+              "zip_code": 100492,
+              "pref_code": "05",
+              "pref_name": "秋田県",
+              "pref_kana": null,
+              "pref_roma": null,
+              "city_code": 5368,
+              "city_name": "南秋田郡大潟村",
+              "city_kana": null,
+              "city_roma": null,
+              "town_name": "字西",
+              "town_kana": null,
+              "town_roma": null,
+              "biz_name": "あきたこまち生産者協会",
+              "biz_kana": "アキタコマチセイサンシヤキヨウカイ",
+              "biz_roma": null,
+              "block_name": "４丁目８８",
+              "other_name": null,
+              "address": null,
+              "longitude": null,
+              "latitude": null
+            }
+          ],
+          "searchtype": "bizzipcode",
+          "limit": 10,
+          "count": 1,
+          "page": 1
+        },
+        "properties": {
+          "page": {
+            "description": "ページ数 (デフォルト値:1)",
+            "example": 1,
+            "format": "int32",
+            "type": "integer",
+            "x-description-en": "Page count (default:1)"
+          },
+          "limit": {
+            "description": "取得最大レコード数 (デフォルト値:1000、最大値:1000)",
+            "example": 10,
+            "format": "int32",
+            "type": "integer",
+            "x-description-en": "Maximum number of records to retrieve (default:1000, max:1000)\n"
+          },
+          "count": {
+            "description": "該当データ数",
+            "example": 1,
+            "format": "int32",
+            "type": "integer",
+            "x-description-en": "Number of relevant data"
+          },
+          "searchtype": {
+            "description": "検索タイプ (dgacode/zipcode/bizzipcodeのいずれか)",
+            "example": "bizzipcode",
+            "type": "string",
+            "x-description-en": "Search type (Any of 'dgacode', 'zipcode', or 'bizzipcode')"
+          },
+          "addresses": {
+            "items": {
+              "$ref": "#/components/schemas/SearchcodeSearchRes_addresses_inner"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "addresses",
+          "count",
+          "limit",
+          "page",
+          "searchtype"
+        ],
+        "type": "object"
+      },
+      "AddressRes_addresses_inner": {
+        "properties": {
+          "zip_code": { "type": "string" },
+          "pref_code": { "type": "string" },
+          "pref_name": { "type": "string" },
+          "pref_kana": { "type": "string" },
+          "pref_roma": { "type": "string" },
+          "city_code": { "type": "string" },
+          "city_name": { "type": "string" },
+          "city_kana": { "type": "string" },
+          "city_roma": { "type": "string" },
+          "town_name": { "type": "string" },
+          "town_kana": { "type": "string" },
+          "town_roma": { "type": "string" }
+        }
+      },
+      "AddressRes": {
+        "example": {
+          "addresses": [
+            [
+              {
+                "zip_code": "1040044",
+                "pref_code": "13",
+                "pref_name": "東京都",
+                "pref_kana": "トウキョウト",
+                "pref_roma": "TOKYO",
+                "city_code": "13102",
+                "city_name": "中央区",
+                "city_kana": "チュウオウク",
+                "city_roma": "CHUO-KU",
+                "town_name": "明石町",
+                "town_kana": "アカシチョウ",
+                "town_roma": "AKASHICHO"
+              },
+              {
+                "zip_code": "1040042",
+                "pref_code": "13",
+                "pref_name": "東京都",
+                "pref_kana": "トウキョウト",
+                "pref_roma": "TOKYO",
+                "city_code": "13102",
+                "city_name": "中央区",
+                "city_kana": "チュウオウク",
+                "city_roma": "CHUO-KU",
+                "town_name": "入船一丁目",
+                "town_kana": "イリフネ 1",
+                "town_roma": "IRIFUNE 1"
+              }
+            ],
+            [
+              {
+                "zip_code": "1040044",
+                "pref_code": "13",
+                "pref_name": "東京都",
+                "pref_kana": "トウキョウト",
+                "pref_roma": "TOKYO",
+                "city_code": "13102",
+                "city_name": "中央区",
+                "city_kana": "チュウオウク",
+                "city_roma": "CHUO-KU",
+                "town_name": "明石町",
+                "town_kana": "アカシチョウ",
+                "town_roma": "AKASHICHO"
+              },
+              {
+                "zip_code": "1040042",
+                "pref_code": "13",
+                "pref_name": "東京都",
+                "pref_kana": "トウキョウト",
+                "pref_roma": "TOKYO",
+                "city_code": "13102",
+                "city_name": "中央区",
+                "city_kana": "チュウオウク",
+                "city_roma": "CHUO-KU",
+                "town_name": "入船一丁目",
+                "town_kana": "イリフネ 1",
+                "town_roma": "IRIFUNE 1"
+              }
+            ]
+          ],
+          "level": 2,
+          "limit": 100,
+          "count": 2,
+          "page": 1
+        },
+        "properties": {
+          "level": {
+            "description": "マッチングレベル",
+            "example": 2,
+            "format": "int32",
+            "type": "integer",
+            "x-description-en": "Matching Level"
+          },
+          "page": {
+            "description": "ページ数",
+            "example": 1,
+            "format": "int32",
+            "type": "integer",
+            "x-description-en": "Page Number"
+          },
+          "limit": {
+            "description": "取得最大レコード数",
+            "example": 100,
+            "format": "int32",
+            "type": "integer",
+            "x-description-en": "Maximum Number of Records to Retrieve"
+          },
+          "count": {
+            "description": "該当データ数",
+            "example": 2,
+            "format": "int32",
+            "type": "integer",
+            "x-description-en": "Number of Matching Records"
+          },
+          "addresses": {
+            "items": {
+              "$ref": "#/components/schemas/AddressRes_addresses_inner"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "addresses",
+          "count",
+          "level",
+          "limit",
+          "page"
+        ],
+        "type": "object"
+      },
+      "AddressReq": {
+        "example": {
+          "pref_kana": "pref_kana",
+          "pref_roma": "pref_roma",
+          "freeword": "freeword",
+          "city_code": "city_code",
+          "pref_code": "pref_code",
+          "city_roma": "city_roma",
+          "pref_name": "pref_name",
+          "city_kana": "city_kana",
+          "town_roma": "town_roma",
+          "city_name": "city_name",
+          "town_name": "town_name",
+          "limit": 5,
+          "town_kana": "town_kana",
+          "page": 1,
+          "flg_getcity": 0.8008281904610115,
+          "flg_getpref": 6.027456183070403
+        },
+        "properties": {
+          "pref_code": {
+            "description": "都道府県コード",
+            "type": "string",
+            "x-description-en": "Prefecture Code"
+          },
+          "pref_name": {
+            "description": "都道府県名",
+            "type": "string",
+            "x-description-en": "Prefecture Name"
+          },
+          "pref_kana": {
+            "description": "都道府県名カナ",
+            "type": "string",
+            "x-description-en": "Prefecture Name (Kana)"
+          },
+          "pref_roma": {
+            "description": "都道府県名ローマ字",
+            "type": "string",
+            "x-description-en": "Prefecture Name (Romanized)"
+          },
+          "city_code": {
+            "description": "市区町村コード",
+            "type": "string",
+            "x-description-en": "City Code"
+          },
+          "city_name": {
+            "description": "市区町村名",
+            "type": "string",
+            "x-description-en": "City Name"
+          },
+          "city_kana": {
+            "description": "市区町村名カナ",
+            "type": "string",
+            "x-description-en": "City Name (Kana)"
+          },
+          "city_roma": {
+            "description": "市区町村名ローマ字",
+            "type": "string",
+            "x-description-en": "City Name (Romanized)"
+          },
+          "town_name": {
+            "description": "町域",
+            "type": "string",
+            "x-description-en": "Town"
+          },
+          "town_kana": {
+            "description": "町域カナ",
+            "type": "string",
+            "x-description-en": "Town (Kana)"
+          },
+          "town_roma": {
+            "description": "町域ローマ字",
+            "type": "string",
+            "x-description-en": "Town (Romanized)"
+          },
+          "freeword": {
+            "description": "フリーワード",
+            "type": "string",
+            "x-description-en": "Free Word"
+          },
+          "flg_getcity": {
+            "description": "市区町村一覧のみ取得フラグ (デフォルト値:0、 0:すべての情報を取得、1:市区町村のみの情報を取得)",
+            "type": "number",
+            "x-description-en": "Flag for Retrieving City List Only (default:0, 0:Retrieve all information, 1:Retrieve city information only)\n"
+          },
+          "flg_getpref": {
+            "description": "都道府県一覧のみ取得フラグ (デフォルト値:0、0:すべての情報を取得、1:都道府県のみの情報を取得)",
+            "type": "number",
+            "x-description-en": "Flag for Retrieving Prefecture List Only (default:0, 0:Retrieve all information, 1:Retrieve prefecture information only)\n"
+          },
+          "page": {
+            "description": "ページ数 (デフォルト値:1)",
+            "type": "integer",
+            "x-description-en": "Page Number (default:1)\n"
+          },
+          "limit": {
+            "description": "取得最大レコード数 (デフォルト値:1000、最大値:1000)",
+            "type": "integer",
+            "x-description-en": "Maximum Number of Records to Retrieve (default:1000, max:1000)\n"
+          }
+        },
+        "type": "object"
+      },
+      "jtokenReq": {
+        "properties": {
+          "grant_type": {
+            "description": "grant_type (「client_credentials」で固定)",
+            "example": "client_credentials",
+            "type": "string",
+            "x-description-en": "grant_type (fixed as \"client_credentials\")"
+          },
+          "client_id": {
+            "description": "クライアントID",
+            "example": "TEST7t6fj7eqC5v6UDaHlpvvtesttest",
+            "type": "string",
+            "x-description-sbx": "クライアントID （固定：テスト用API認証情報画面の\"システム情報\"参照）",
+            "x-description-en": "Client ID"
+          },
+          "secret_key": {
+            "description": "シークレットキー",
+            "example": "testGzhSdzpZ1muyICtest0123456789",
+            "type": "string",
+            "x-description-sbx": "シークレットキー （固定：テスト用API認証情報画面の\"システム情報\"参照）",
+            "x-description-en": "Secret Key"
+          }
+        },
+        "required": [
+          "client_id",
+          "grant_type",
+          "secret_key"
+        ],
+        "type": "object"
+      },
+      "jtokenRes": {
+        "example": {
+          "scope": "J1",
+          "token_type": "Bearer",
+          "expires_in": 123456,
+          "token": "{アクセストークン}"
+        },
+        "properties": {
+          "token": {
+            "description": "アクセストークン",
+            "example": "{アクセストークン}",
+            "type": "string",
+            "x-description-en": "Access Token"
+          },
+          "token_type": {
+            "description": "トークンタイプ",
+            "example": "Bearer",
+            "type": "string",
+            "x-description-en": "Token Type"
+          },
+          "expires_in": {
+            "description": "有効秒数",
+            "example": 123456,
+            "format": "int32",
+            "type": "integer",
+            "x-description-en": "Validity duration (seconds)"
+          },
+          "scope": {
+            "description": "スコープ",
+            "example": "J1",
+            "type": "string",
+            "x-description-en": "Scope"
+          }
+        },
+        "required": [
+          "expires_in",
+          "scope",
+          "token",
+          "token_type"
+        ],
+        "type": "object"
+      },
+      "BadRequest": {
+        "example": {
+          "error_code": "error_code",
+          "message": "message",
+          "request_id": "request_id"
+        },
+        "properties": {
+          "request_id": {
+            "description": "問合せID (追跡コード)",
+            "type": "string",
+            "x-description-en": "Inquiry ID (Tracking Code)\n"
+          },
+          "error_code": {
+            "description": "エラーコード",
+            "type": "string",
+            "x-description-en": "Error Code"
+          },
+          "message": {
+            "description": "エラーメッセージ",
+            "type": "string",
+            "x-description-en": "Error Message"
+          }
+        },
+        "required": [
+          "error_code",
+          "message",
+          "request_id"
+        ],
+        "type": "object"
+      },
+      "Unauthorized": {
+        "example": {
+          "error_code": "error_code",
+          "message": "message",
+          "request_id": "request_id"
+        },
+        "properties": {
+          "request_id": {
+            "description": "問合せID (追跡コード)",
+            "type": "string",
+            "x-description-en": "Inquiry ID (Tracking Code)\n"
+          },
+          "error_code": {
+            "description": "エラーコード",
+            "type": "string",
+            "x-description-en": "Error Code"
+          },
+          "message": {
+            "description": "エラーメッセージ",
+            "type": "string",
+            "x-description-en": "Error Message"
+          }
+        },
+        "required": [
+          "error_code",
+          "message",
+          "request_id"
+        ],
+        "type": "object"
+      },
+      "Forbidden": {
+        "example": {
+          "error_code": "error_code",
+          "message": "message",
+          "request_id": "request_id"
+        },
+        "properties": {
+          "request_id": {
+            "description": "問合せID (追跡コード)",
+            "type": "string",
+            "x-description-en": "Inquiry ID (Tracking Code)\n"
+          },
+          "error_code": {
+            "description": "エラーコード",
+            "type": "string",
+            "x-description-en": "Error Code"
+          },
+          "message": {
+            "description": "エラーメッセージ",
+            "type": "string",
+            "x-description-en": "Error Message"
+          }
+        },
+        "required": [
+          "error_code",
+          "message",
+          "request_id"
+        ],
+        "type": "object"
+      },
+      "NotFound": {
+        "example": {
+          "error_code": "error_code",
+          "message": "message",
+          "request_id": "request_id"
+        },
+        "properties": {
+          "request_id": {
+            "description": "問合せID (追跡コード)",
+            "type": "string",
+            "x-description-en": "Inquiry ID (Tracking Code)\n"
+          },
+          "error_code": {
+            "description": "エラーコード",
+            "type": "string",
+            "x-description-en": "Error Code"
+          },
+          "message": {
+            "description": "エラーメッセージ",
+            "type": "string",
+            "x-description-en": "Error Message"
+          }
+        },
+        "required": [
+          "error_code",
+          "message",
+          "request_id"
+        ],
+        "type": "object"
+      },
+      "Error": {
+        "example": {
+          "error_code": "error_code",
+          "message": "message",
+          "request_id": "request_id"
+        },
+        "properties": {
+          "request_id": {
+            "description": "問合せID (追跡コード)",
+            "type": "string",
+            "x-description-en": "Inquiry ID (Tracking Code)\n"
+          },
+          "error_code": {
+            "description": "エラーコード",
+            "type": "string",
+            "x-description-en": "Error Code"
+          },
+          "message": {
+            "description": "エラーメッセージ",
+            "type": "string",
+            "x-description-en": "Error Message"
+          }
+        },
+        "required": [
+          "error_code",
+          "message",
+          "request_id"
+        ],
+        "type": "object"
+      }
+    }
+  }
+}

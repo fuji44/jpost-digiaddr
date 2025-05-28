@@ -1,0 +1,58 @@
+# 郵便番号・デジタルアドレス for BizのHTTPリクエスト定義ファイル
+# Rest Client for Visual Studio Codeを使用してリクエストを実行できます。
+# ref: https://github.com/Huachao/vscode-restclient
+
+# OpenAPI Specification
+# 本番用: https://biz.da.pf.japanpost.jp/apireference/digiadd-swagger-biz.html
+# テスト用: https://biz.da.pf.japanpost.jp/apireference/digiadd-mock-swagger-biz.html
+
+
+# 注意: .envファイルに定義された環境変数を使用します。
+# .env.exampleファイルを参考にして、環境変数を設定してください。
+# .envファイルは、.httpファイルと同じディレクトリに配置する必要があります。
+
+# baseUrlは、テスト環境と本番環境で異なります。
+# 本番サーバにリクエストする場合はEnvironmentを `prod` に切り替えてください。
+
+###
+# API利用トークンの取得
+# @name getToken
+POST {{baseUrl}}/api/v1/j/token
+Content-Type: application/json
+
+{
+  "grant_type": "client_credentials",
+  "client_id": "{{$dotenv JPOST_DIGIADDR_CLIENT_ID}}",
+  "secret_key": "{{$dotenv JPOST_DIGIADDR_CLIENT_SECRET}}"
+}
+
+###
+
+@token = {{getToken.response.body.token}}
+
+###
+# 住所から郵便番号を検索
+# @name searchAddressZip
+POST {{baseUrl}}/api/v1/addresszip
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "pref_name": "東京都",
+  "city_name": "千代田区",
+  "flg_getcity": 0,
+  "flg_getpref": 0,
+  "page": 1,
+  "limit": 100
+}
+
+###
+
+@code = A7E2FK2
+
+###
+# コード番号検索
+# @name searchCode
+GET {{baseUrl}}/api/v1/searchcode/{{code}}
+Content-Type: application/json
+Authorization: Bearer {{token}}

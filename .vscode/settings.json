@@ -1,0 +1,10 @@
+{
+  "rest-client.environmentVariables": {
+    "$shared": {
+      "baseUrl": "https://stub-qz73x.da.pf.japanpost.jp"
+    },
+    "prod": {
+      "baseUrl": "https://api.da.pf.japanpost.jp"
+    }
+  }
+}
