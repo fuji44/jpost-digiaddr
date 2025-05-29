@@ -7,6 +7,10 @@ import {
 } from "../mod.ts";
 
 export class JPostDigiAddrAccessTokenProvider implements AccessTokenProvider {
+  private tokenInfo?: {
+    token: string;
+    expiresAt: Date;
+  };
   constructor(
     private readonly clientId: string,
     private readonly secretKey: string,
@@ -20,6 +24,9 @@ export class JPostDigiAddrAccessTokenProvider implements AccessTokenProvider {
     return new AllowedHostsValidator(allowedHosts);
   }
   async getAuthorizationToken(): Promise<string> {
+    if (this.tokenInfo && this.tokenInfo.expiresAt > new Date()) {
+      return this.tokenInfo.token;
+    }
     const authProvider = new AnonymousAuthenticationProvider();
     const authAdapter = new FetchRequestAdapter(authProvider);
     if (this.baseUrl) {
@@ -31,9 +38,13 @@ export class JPostDigiAddrAccessTokenProvider implements AccessTokenProvider {
       secretKey: this.secretKey,
       grantType: "client_credentials",
     });
-    if (!tokenResp?.token) {
+    if (!tokenResp?.token || !tokenResp?.expiresIn) {
       throw new Error("Failed to get token");
     }
+    this.tokenInfo = {
+      token: tokenResp.token,
+      expiresAt: new Date(Date.now() + tokenResp.expiresIn * 1000),
+    };
     return tokenResp.token;
   }
 }
