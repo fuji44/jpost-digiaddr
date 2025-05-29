@@ -46,13 +46,16 @@ const client = createJPostDigiAddrClient(adapter);
 const resp = await client.api.v1.searchcode.bySearch_code("A7E2FK2").get({
   queryParameters: { page: 1, limit: 10 },
 });
+
+console.log(JSON.stringify(resp));
+// {"page":1,"limit":10,"count":1,"searchtype":"dgacode","addresses":[{"dgacode":"A7E2FK2","zipCode":"100-0005","prefCode":"13","prefName":"東京都","cityCode":"13101","cityName":"千代田区","townName":"丸の内","blockName":"２丁目７−２","otherName":"部屋番号：サンプル１","address":"東京都千代田区丸の内２丁目７−２部屋番号：サンプル１"}]}
 ```
 
 ## テスト
 
 テストを実行するクライアントID・シークレットが必要です。郵便番号・デジタルアドレス for Bizのサイトからテスト用のクライアントID・シークレットを確認して、プロジェクトルートに `.env` を作成し、以下のように記載してください。
 
-```env
+```ini
 JPOST_DIGIADDR_CLIENT_ID=your_client_id_here
 JPOST_DIGIADDR_CLIENT_SECRET=your_client_secret_here
 ```
