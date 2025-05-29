@@ -1,5 +1,5 @@
 import { load } from "@std/dotenv";
-import { assertEquals, fail } from "@std/assert";
+import { assertEquals, assertExists, fail } from "@std/assert";
 import {
   BaseBearerTokenAuthenticationProvider,
   createJPostDigiAddrClient,
@@ -53,6 +53,30 @@ Deno.test({
     assertEquals(resp.searchtype, "dgacode");
     resp.addresses?.forEach((address) => {
       assertEquals(address.dgacode, "A7E2FK2");
+    });
+
+    const addressZipResp = await client.api.v1.addresszip.post(
+      {
+        prefName: "東京都",
+        cityName: "千代田区",
+        flgGetcity: 0,
+        flgGetpref: 0,
+        page: 1,
+        limit: 10,
+      },
+    );
+
+    if (!addressZipResp) {
+      fail("Response is undefined");
+    }
+
+    assertExists(addressZipResp.count);
+    assertEquals(addressZipResp.page, 1);
+    assertEquals(addressZipResp.limit, 10);
+    assertEquals(addressZipResp.level, 2);
+    addressZipResp.addresses?.forEach((address) => {
+      assertEquals(address.prefName, "東京都");
+      assertEquals(address.cityName, "千代田区");
     });
   },
 });
